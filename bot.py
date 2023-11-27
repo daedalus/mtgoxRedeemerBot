@@ -21,15 +21,16 @@ class requester:
     def build_query(self, req={}):
         req["nonce"] = get_nonce()
         post_data = urlencode(req)
-        headers = {}
-        headers["User-Agent"] = "GoxApi"
-        headers["Rest-Key"] = self.auth_key
-        headers["Rest-Sign"] = sign_data(self.auth_secret, post_data)
+        headers = {
+            "User-Agent": "GoxApi",
+            "Rest-Key": self.auth_key,
+            "Rest-Sign": sign_data(self.auth_secret, post_data),
+        }
         return (post_data, headers)
  
     def perform(self, path, args):
         data, headers = self.build_query(args)
-        req = urllib2.Request("https://mtgox.com/api/0/"+path, data, headers)
+        req = urllib2.Request(f"https://mtgox.com/api/0/{path}", data, headers)
         res = urllib2.urlopen(req, data)
         return json.load(res)
 
